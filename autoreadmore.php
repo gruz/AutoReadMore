@@ -40,7 +40,9 @@ if (!$isOk) {
 	}
 }
 else {
-
+$com_path = JPATH_SITE.'/components/com_content/';
+if (!class_exists ('ContentRouter') ) { require_once $com_path.'router.php'; } // require_once $com_path.'router.php';
+if (!class_exists ('ContentHelperRoute') ) { require_once $com_path.'helpers/route.php'; } // require_once $com_path.'helpers/route.php';
 
 class plgContentAutoReadMoreCore extends JPluginGJFields {
 
@@ -93,7 +95,12 @@ class plgContentAutoReadMoreCore extends JPluginGJFields {
 		$tmp = array_filter((array)$params);
 		if (empty($tmp)) {return;} // It seems that modules don't have params but are parsed with the fucntion. So stop this.
 		unset($tmp);
-		$this->params_content = $params;
+		if (is_object($params)) {
+			$this->params_content = $params;
+		} else {
+			$this->params_content = new JRegistry;
+			$this->params_content->loadString($params, 'JSON'); // Load my plugin params.
+		}
 
 		// SOME SPECIAL RETURNS {
 		if($context == 'easyblog.blog' && $jinput->get('view',null,'CMD')  == 'entry' ){// fix easyblog
@@ -511,6 +518,7 @@ class plgContentAutoReadMoreCore extends JPluginGJFields {
 					}
 					break;
 				}
+
 				// Prepare the article link
 				if ( $this->params_content->get('access-view') ) :
 					$link = JRoute::_(ContentHelperRoute::getArticleRoute($article->slug, $article->catid));
