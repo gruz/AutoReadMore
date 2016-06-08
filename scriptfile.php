@@ -3,6 +3,10 @@
 defined('_JEXEC') or die('Restricted access');
 if (!class_exists('ScriptAry')) { include dirname(__FILE__).'/scriptary.php';}
 
+
+
+
+
 /**
  * Script file
  */
@@ -157,11 +161,11 @@ class plgContentAutoreadmoreInstallerScript extends ScriptAry {
 				}
 
 			}
-
 			$installer = new JInstaller();
+
 			if ($installer->install($extpath.'/'.$folder)) {
-				$manifest = $installer->getManifest();
-				$this->messages[] = JText::sprintf('COM_INSTALLER_INSTALL_SUCCESS','<b style="color:#0055BB;">['.$manifest->name.']<span style="color:green;">').'</span></b>';
+				//~ $manifest = $installer->getManifest();
+				//~ $this->messages[] = JText::sprintf('COM_INSTALLER_INSTALL_SUCCESS','<b style="color:#0055BB;">['.$manifest->name.']<span style="color:green;">').'</span></b>';
 			}
 			else {
 				$this->messages[] = '<span style="color:red;">'.$folder . ' '.JText::_('JERROR_AN_ERROR_HAS_OCCURRED') . '</span>';

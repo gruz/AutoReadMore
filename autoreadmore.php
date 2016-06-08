@@ -90,30 +90,13 @@ class plgContentAutoReadMoreCore extends JPluginGJFields {
 	 *
 	 */
 	public function onContentPrepare($context, &$article, &$params, $page=null){
+		if (!JFactory::getApplication()->isSite()) {return false;}
 		$jinput = JFactory::getApplication()->input;
 		if ($jinput->get('option',null,'CMD') == 'com_dump') {return;}
-		$tmp = array_filter((array)$params);
-		if (empty($tmp)) {return;} // It seems that modules don't have params but are parsed with the fucntion. So stop this.
-		unset($tmp);
-		if (is_object($params)) {
-			$this->params_content = $params;
-		} else {
-			$this->params_content = new JRegistry;
-			$this->params_content->loadString($params, 'JSON'); // Load my plugin params.
-		}
-
-		// SOME SPECIAL RETURNS {
-		if($context == 'easyblog.blog' && $jinput->get('view',null,'CMD')  == 'entry' ){// fix easyblog
-			return;
-		}
-		if (strpos($context,'mod_') === 0) { // Not to work on modules, like mod_roksprocket.article
-			return;
-		}
 		// SOME SPECIAL RETURNS }
-
 		$debug = $this->paramGet('debug') ;
 		if ($debug) {
-			if (function_exists('dump')) {
+			if (function_exists('dump') && false) {
 				dump ($article,'context = '. $context);
 			}
 			else {
@@ -121,49 +104,44 @@ class plgContentAutoReadMoreCore extends JPluginGJFields {
 					JFactory::getApplication()->enqueueMessage(
 					'Context : '.$context . '<br />'.
 					'Title : '.@$article->title . '<br />'.
-					'Id : '.@$article->id . '<br />'
+					'Id : '.@$article->id . '<br />'.
+					'CatId : '.@$article->catid . '<br />'
 					, 'warning');
 				}
 				elseif($debug == 2) {
-					echo '<pre style="height:400px;overflow:auto;">';
+					echo '<pre style="height:180px;overflow:auto;">';
 					echo '<b>Context : '.$context . '</b><br />';
+					echo '<b>Content Item object : </b><br />';
 					print_r($article);
+					if (!empty($params)) {
+						echo '<b>Params:</b><br />';
+						print_r ($params);
+					} else {
+						echo '<b>Params NOT passed</b><br />';
+					}
 					echo '</pre>'.PHP_EOL;
 				}
 			}
 		}
-
-		$context_global = explode ('.',$context);
-		$context_global = $context_global [0];
-		if (!JFactory::getApplication()->isSite()) {return;}
-
-		// check allowed context
-		if ( $context_global =='com_virtuemart' ) { return;} // Hardcoded contexts
-		$contextsToExclude = $this->paramGet('contextsToExclude');
-		$contextsToExclude = array_map('trim',explode(",",$contextsToExclude));
-
-		// Some hard-coded contexts to exclude
-		$contextsToExclude[] = 'com_tz_portfolio.p_article';
-		if (in_array($context_global,$contextsToExclude) || in_array($context,$contextsToExclude)  ) { return; }
-
-		//if ($context != "com_content.article") {return;}
-		$jinput = JFactory::getApplication()->input;
-		$view = $jinput->get('view',null,'CMD');
-		$article_id = $jinput->get('id',null,'INT');
-
-		//I leave as a note for myself: if ($page === 0) { /*the article is loaded from a module, as far as I can see. But I use another method to check article or modue. */ }
-		if (
-			($view == "article" && $article->id == $article_id) ||
-			($context == 'com_k2.item' && $article->id == $article_id)) {//it it's already a full article - go away'
-
-			if (!isset($GLOBALS['joomlaAutoReadMorePluginArticleShown']) ) { // But leave a flag not to go aways in a module
-				$GLOBALS['joomlaAutoReadMorePluginArticleShown'] = $article_id;
-				return;
-			}
+		if ($context == 'com_tags.tag') {
+			//$context = $article->type_alias;
+			$article->catid = $article->core_catid;
+			$article->id = $article->content_item_id;
+			$article->slug = $article->id.':'.$article->core_alias;
 		}
-		if ($this->paramGet('Enabled_Front_Page') == 0 and $view=='featured') { return;}
+
+		if (!$this->_checkIfAllowedContext($context,$article)) { return; }
+		if (!$this->_checkIfAllowedCategoryAndItem($context,$article)) { return; }
+
+		if (is_object($params)) {
+			$this->params_content = $params;
+		} else {
+			$this->params_content = new JRegistry;
+			$this->params_content->loadString($params, 'JSON'); // Load my plugin params.
+		}
 
 
+		// Add css code
 		if (!isset($GLOBALS['+xji*;!1'])) {
 			$doc = JFactory::getDocument();
 			$csscode = $this->paramGet('csscode');
@@ -171,111 +149,52 @@ class plgContentAutoReadMoreCore extends JPluginGJFields {
 			$GLOBALS['+xji*;!1'] = true;
 		}
 
-		if ($this->paramGet('Ignore_Existing_Read_More') == 0 && !empty($article->readmore) && $article->readmore>0 ) {
-			if ($this->paramGet('Force_Image_Handle')) {
-				$article->introtext = $this->getThumbNails($article->introtext,$article).$article->introtext;
-
-			}
-			return;
+		if (isset($article->introtext)) {
+			$text = $article->introtext; // For core article
 		}
-		$articles_switch = $this->paramGet('articles_switch');
-
-		$articles = $this->paramGet('articles');
-		$articles = explode (',',$articles);
-
-		$checkincats = true;
-		switch ($articles_switch) {
-			case '0'://no specific articles set
-				$checkincats = true;
-				break;
-			case '1'://some articles are selected
-				//if the article is among the seleted ones - do not check for cats
-				if (in_array($article->id,$articles)) {
-					$checkincats = false;
-				}
-				break;
-			case '2'://some articles are excluded
-				//if the article is among the excluded ones - return
-				if (in_array($article->id,$articles)) {
-					return;
-				}
-				break;
-			default :
-				return;
-				break;
+		else {
+			$text = $article->text; // In most non core content items and modules
 		}
 
-		//check if the article is allowed based on the cats selection
-		while (true) {
-			if (!$checkincats) {break;}
-			$categories_switch = $this->paramGet('categories_switch');
-			if ($categories_switch == 0) { break; }
-
-			$categories = (array)$this->paramGet('categories');
-			$in_array = in_array ($article->catid,$categories);
-			if (!$in_array) {
-				$categories_text = explode(',',$this->paramGet('categories_text'));
-				$in_array = in_array ($article->catid,$categories_text);
-			}
-
-			switch ($categories_switch) {
-				case '0'://ALL CATS
-					//do nothing
-					break;
-				case '1'://selected cats
-					//selection list is empty or the category is not in the selection list
-					if (empty ($categories) || !$in_array) { return; }
-					break;
-				case '2'://excludes cats
-					if ($in_array) { return; }
-					break;
-				default :
-					return;
-					break;
-			}
-			break;
+		$this->fulltext_loaded = false;//fulltext is not loaded, we must load it manually if needed
+		if ($this->paramGet('Ignore_Existing_Read_More') && isset($article->introtext) && isset($article->fulltext)) {
+			$text = $article->introtext.PHP_EOL.$article->fulltext;
+			$this->fulltext_loaded = true;
 		}
+		else if ($this->paramGet('Ignore_Existing_Read_More') && isset($article->readmore) && $article->readmore>0 ) {
+			//if we ignore manual readmore and we know it's present, then we must load the full text
+			$text .= $this->loadFullText ($article->id);
+			$this->fulltext_loaded = true;
+		}
+		$thumbnails = $this->getThumbNails($text,$article,$context);
+
+
+
+
+
+		// If we must use an existing readmore, but also have to hande image
+		//~ if (!$this->paramGet('Ignore_Existing_Read_More') && !empty($article->readmore) && $article->readmore>0 ) {
+			//~ if ($this->paramGet('Force_Image_Handle')) {
+				//~ $text = $thumbnails.$text;
+				//~ $debug_addon = '';
+				//~ if ($debug) {
+					//~ $debug_addon = '<code>[DEBUG: AutoReadMore fired here]</code>';
+				//~ }
+				//~ $article->introtext = $text.$debug_addon;
+				//~ $article->text = $text.$debug_addon;
+			//~ }
+			//~ return;
+		//~ }
+//~
 
 		// How many characters are we allowed?
-		//$app = & JFactory::getApplication();
-		// get current menu item number of leading articles
 		$app = JFactory::getApplication();
 
-		//it's strange, but I couldn't call the variable as $params - it removes the header lin in that case. I can't believe, but true.
+		// get current menu item number of leading articles
+		//it's strange, but I couldn't call the variable as $params - it removes the header line in that case. I can't believe, but true.
 		// So don't use $params = $app->getParams(); Either use another var name like $gparams = $app->getParams(); or the direct call
 		// as shown below: $app->getParams()->def('num_leading_articles', 0);
 		$num_leading_articles = $app->getParams()->def('num_leading_articles', 0);
-
-		/* It seems this link manipulations are not needed. Link is present in the article itself
-		while (true) {
-			$option = $jinput->get('option',null,'CMD');
-			if (in_array($context_global,array ( // Do not create link for K2, VM and so on
-					'com_k2',
-					'com_virtuemart'
-				) ))
-			{
-				break;
-			}
-			// Prepare the article link
-			if ( $params->get('access-view') ) :
-				$link = JRoute::_(ContentHelperRoute::getArticleRoute($article->slug, $article->catid));
-			else :
-				$menu = JFactory::getApplication()->getMenu();
-				$active = $menu->getActive();
-				if (!isset($active->id)) {
-					$active = $menu->getDefault();
-				}
-				$itemId = $active->id;
-				$link1 = JRoute::_('index.php?option=com_users&view=login&Itemid=' . $itemId);
-				$returnURL = JRoute::_(ContentHelperRoute::getArticleRoute($article->slug, $article->catid));
-				$link = new JURI($link1);
-				$link->setVar('return', base64_encode($returnURL));
-			endif;
-
-			break;
-		}
-		*/
-
 
 		// count how many times the plugin is called to know if the current article is a leading one
 		$GLOBALS['plg_content_AutoReadMore_Count'] = (isset($GLOBALS['plg_content_AutoReadMore_Count'])) ? $GLOBALS['plg_content_AutoReadMore_Count']+1 : 1;
@@ -290,22 +209,6 @@ class plgContentAutoReadMoreCore extends JPluginGJFields {
 
 		if (!is_numeric($maxLimit)) $maxLimit = 500;
 
-		// What text are we working with?
-//		!empty($article->readmore)
-		if (!empty($article->introtext)) {
-			$text = $article->introtext;
-		} else {
-			$text = $article->text;
-		}
-		$this->fulltext_loaded = false;//fulltext is not loaded in J2.5, we must load it manually if needed
-		//if we ignore manual readmore and we know it's present, then we must load the full text
-		if ($this->paramGet('Ignore_Existing_Read_More') == 1 && isset($article->readmore) && $article->readmore>0 ) {
-			// damn, we must load the full text...
-			$this->fulltext_loaded = true;
-			$text .= $this->loadFullText ($article->id);
-		}
-
-		$thumbnails = $this->getThumbNails($text,$article);
 
 		$this->trimming_dots = '';
 		if ($this->paramGet ('add_trimming_dots') != 0) {
@@ -313,7 +216,6 @@ class plgContentAutoReadMoreCore extends JPluginGJFields {
 		}
 
 		$limittype = $this->paramGet('limittype');
-
 		if ($limittype == 0) {// Limit by chars
 			if (JString::strlen(strip_tags($text)) > $maxLimit) {
 				if ($this->paramGet('Strip_Formatting') == 1) {
@@ -351,11 +253,11 @@ class plgContentAutoReadMoreCore extends JPluginGJFields {
 					$text = AutoReadMoreString::cleanUpHTML($text);
 
 				}
-				// Add a "read more" link.
+				// Add a "read more" link, makes sense only for com_content
 				$article->readmore = true;
 			}
 		}
-		else 		if ($limittype == 1) {//Limit by words
+		else if ($limittype == 1) {//Limit by words
 
 			if (!class_exists('AutoReadMoreString')) { require_once (dirname(__FILE__).'/helpers/AutoReadMoreString.php'); }
 			$text = AutoReadMoreString::truncateByWords($text,$maxLimit,$article->readmore);
@@ -378,7 +280,6 @@ class plgContentAutoReadMoreCore extends JPluginGJFields {
 				$text = implode('</p>',$text);
 				$article->readmore = true;
 			}
-
 		}
 		if ($this->paramGet('Strip_Formatting') == 1) {
 			$text = strip_tags($text);
@@ -386,17 +287,7 @@ class plgContentAutoReadMoreCore extends JPluginGJFields {
 
 		// If we have thumbnails, add it to $text.
 		$text = $thumbnails . $text;
-		// If Developer Mode is turned on, add some stuff.
-		if ($this->paramGet('Developer_Mode') == 1) {
-			$text = ''
-			. '<div style="height:150px;width:100%;overflow:auto;">'
-			. '<b>Developer information:</b><br /><pre>'
-			. 'Developers: uncomment the next line in the code to display $GLOBALS.  If you see this message and do not know what it means, you should turn Developer_Mode off in the Auto Read More configuration.'
-			. (htmlspecialchars(print_r($GLOBALS, 1))) // by default, this is commented out for security.  Only uncomment it if you know what you are doing.
-			. '</pre></div>'
-			. $text
-			;
-		}
+
 		if ($this->paramGet('wrap_output') == 1) {
 			$template = $this->paramGet('wrap_output_template');
 			$text = str_replace('%OUTPUT%',$text,$template);
@@ -404,10 +295,195 @@ class plgContentAutoReadMoreCore extends JPluginGJFields {
 		if ($this->paramGet('readmore_text') && empty($this->alternative_readmore)) {
 			$article->alternative_readmore = JText::_($this->paramGet('readmore_text'));
 		}
-
-		$article->introtext = $text;
-		$article->text = $text;
+		$debug_addon = '';
+		if ($debug) {
+			$debug_addon = '<code>[DEBUG: AutoReadMore fired here]</code>';
+		}
+		$article->introtext = $text.$debug_addon;
+		$article->text = $text.$debug_addon;
 	}
+
+
+	function _checkIfAllowedCategoryAndItem ($context,$article) {
+		if (!isset($article->catid) && !isset($article->id) ) {
+			return true;
+		}
+
+		$data = array();
+
+		if ( // Prepare data from joomla core articles or frontpage
+			($this->paramGet('joomla_articles')		&& 	$context == 'com_content.category')	 ||
+			($this->paramGet('Enabled_Front_Page')	&& 	$context == 'com_content.featured')
+		) {
+			$prefix = '';
+			if ($context == 'com_content.featured') {
+				$prefix = 'fp_';
+			}
+			$row = array(
+				'category_switch' => $this->paramGet($prefix.'categories_switch'),
+				'category_ids' => $this->paramGet($prefix.'categories'),
+				'item_switch' => $this->paramGet($prefix.'articles_switch'),
+				'item_ids' => $this->paramGet($prefix.'id'),
+			);
+			$data[$context] = $row;
+		}
+
+		$context_switch = $this->paramGet('context_switch') ;
+		if ($context_switch == 'include') {
+			$paramsContexts = $this->paramGet('contextsToInclude');
+			$contextsToInclude = json_decode($paramsContexts);
+			if (!empty($paramsContexts) && $contextsToInclude === NULL) { // The default joomla installation procedure doesn't store defaut params into the DB in the correct way
+				$paramsContexts = str_replace("'",'"',$paramsContexts);
+				$contextsToInclude = json_decode($paramsContexts);
+			}
+			if (!empty($contextsToInclude) && !empty($contextsToInclude->context)) {
+				foreach ($contextsToInclude->context as $k=>$v) {
+					if ($v != $context) { continue; }
+					$row = array(
+						'category_switch' => $contextsToInclude->context_categories_switch[$k],
+						'category_ids' => $contextsToInclude->categories_ids[$k],
+						'item_switch' => $contextsToInclude->context_content_items_switch[$k],
+						'item_ids' => $contextsToInclude->context_content_item_ids[$k],
+					);
+					$data[$context] = $row;
+				}
+			}
+		}
+		if (empty($data[$context])) { return true; }
+
+		$item_switch = $data[$context]['item_switch'];
+		$item_ids = $data[$context]['item_ids'];
+		if (!is_array($item_ids)) {
+			$item_ids = array_map('trim',explode (',',$item_ids));
+		}
+		$category_switch = $data[$context]['item_switch'];
+		$category_ids = $data[$context]['category_ids'];
+		if (!is_array($category_ids)) {
+			$category_ids = array_map('trim',explode (',',$category_ids));
+		}
+		switch ($item_switch) {
+			case '1'://some articles are selected
+				if (in_array($article->id,$item_ids)) {
+					return true;
+				}
+				break;
+			case '2'://some articles are excluded
+				//if the article is among the excluded ones - return false
+				if (in_array($article->id,$item_ids)) {
+					return false;
+				}
+				break;
+			case '0'://no specific articles set
+			default :
+				break;
+		}
+
+		$in_array = in_array ($article->catid,$category_ids);
+		switch ($category_switch) {
+			case '0'://ALL CATS
+				return true;
+				break;
+			case '1'://selected cats
+				if ($in_array) { return true; }
+				else { return false; }
+				break;
+			case '2'://excludes cats
+				if ($in_array) { return false; }
+				else { return true; }
+				break;
+			default :
+				break;
+		}
+		return true;
+	}
+	/**
+	 * Check if current context is allowed either by settings or by some hardcoded rules
+	 *
+	 * @author Gruz <arygroup@gmail.com>
+	 * @param	string	$context	Context passed to the onContentPrepare method
+	 * @param	object	$article	Content item object
+	 * @return	boold			true if allowed, false otherwise
+	 */
+	function _checkIfAllowedContext ($context,$article) {
+		$jinput = JFactory::getApplication()->input;
+		$context_global = explode ('.',$context);
+		$context_global = $context_global [0];
+
+
+		// Some hard-coded contexts to exclude
+		$hard_coded_exclude_global_contexts = array(
+			'com_virtuemart', // never fire for VirtueMart
+		);
+		$contextsToExclude = array(
+			'com_tz_portfolio.p_article', // never run for full article
+			'com_content.article', // never run for full article
+			//~ 'mod_custom.content', // never run at a custom HTML module - DISABLED here, because the user must be allowed to choose this. At some circumstances joomla HTML modules may be needed to cut
+		) ;
+		if (in_array($context_global,$hard_coded_exclude_global_contexts) || in_array($context,$contextsToExclude)  ) { return false; }
+		// SOME SPECIAL RETURNS {
+		if($context == 'easyblog.blog' && $jinput->get('view',null,'CMD')  == 'entry' ){  // fix easyblog
+			return false;
+		}
+
+		$view = $jinput->get('view',null,'CMD');
+		$article_id = $jinput->get('id',null,'INT');
+		if (
+			($view == "article" && $article->id == $article_id) ||
+			($context == 'com_k2.item' && $article->id == $article_id)) {//it it's already a full article - go away'
+			if (!isset($GLOBALS['joomlaAutoReadMorePluginArticleShown']) ) { // But leave a flag not to go aways in a module
+				$GLOBALS['joomlaAutoReadMorePluginArticleShown'] = $article_id;
+				return false;
+			}
+		}
+
+
+		if ($this->paramGet('Enabled_Front_Page') == 0 and $context == 'com_content.featured') { return false;}
+		else if ($this->paramGet('Enabled_Front_Page') == 1 and $context == 'com_content.featured') { return true;}
+		if ($this->paramGet('joomla_articles') == 0 and $context == 'com_content.category') { return false;}
+		else if ($this->paramGet('joomla_articles') == 1 and $context == 'com_content.category') {	return true;	}
+
+		$context_switch = $this->paramGet('context_switch') ;
+		switch ($context_switch) {
+			case 'include':
+				$paramsContexts = $this->paramGet('contextsToInclude');
+				$contextsToInclude = json_decode($paramsContexts);
+				if (!empty($paramsContexts) && $contextsToInclude === NULL) { // The default joomla installation procedure doesn't store defaut params into the DB in the correct way
+					$paramsContexts = str_replace("'",'"',$paramsContexts);
+					$contextsToInclude = json_decode($paramsContexts);
+				}
+				if (!empty($contextsToInclude) && !empty($contextsToInclude->context)) {
+					foreach($contextsToInclude->context as $k=>$v) {
+						if ($context == $v) {
+
+							return true;
+						}
+					}
+				}
+				return false;
+				break;
+			case 'exclude':
+				if ($this->paramGet('exclude_mod_contexts') && strpos($context,'mod_') === 0) { // Not to work on modules, like mod_roksprocket.article
+					return false;
+				}
+				$contextsToExclude = $this->paramGet('contextsToExclude');
+				$contextsToExclude = array_map('trim',explode(",",$contextsToExclude));
+				if (in_array($context,$contextsToExclude)  ) { return false; }
+				break;
+			case 'all_enabled':
+				return true;
+				break;
+			case 'all_disabled':
+				if (!in_array($context,array('com_content.category','com_content.featured'))) { // this check just in case, should never come here in such a case
+					return false;
+				}
+				break;
+			default :
+				break;
+		}
+		return true;
+
+	}
+
 
 
 	/**
@@ -452,9 +528,10 @@ class plgContentAutoReadMoreCore extends JPluginGJFields {
 	 * @author Gruz <arygroup@gmail.com>
 	 * @param	string	$text	HTML code of the article
 	 * @param	object	$article	Article object for additional information like $article->id
+	 * @param	text		$context	Context
 	 * @return	array			Array of 2 string og HTML code
 	 */
-	function getThumbNails( & $text, & $article) {
+	function getThumbNails( & $text, & $article, $context) {
 		// Are we working with any thumbnails?
 		if ($this->paramGet('Thumbnails') < 1) {
 			return;
@@ -465,9 +542,17 @@ class plgContentAutoReadMoreCore extends JPluginGJFields {
 		//if we found less thumbnail then expected and the fulltext is not loaded,
 		// then load fulltext and search in it also
 		$matches_tmp = array ();
-		if ($imagesfound < $this->paramGet('Thumbnails') && !$this->fulltext_loaded) {
+		if ($imagesfound < $this->paramGet('Thumbnails') && !$this->fulltext_loaded && isset($article->id)) {
+			$fulltext = '';
+			if (isset($article->fulltext)) {
+				$fulltext = $article->fulltext;
+			}
+
+			else if(in_array($context,array('com_content.category','com_content.featured'))) {
+				$this->loadFullText ($article->id);
+			}
 			$matches_tmp = $matches[0];
-			$imagesfound  = preg_match_all('/<img [^>]*>/ui', $this->loadFullText ($article->id), $matches);
+			$imagesfound  = preg_match_all('/<img [^>]*>/ui', $fulltext, $matches);
 		}
 		$matches = array_merge($matches_tmp,$matches[0]);
 
@@ -518,7 +603,17 @@ class plgContentAutoReadMoreCore extends JPluginGJFields {
 					}
 					break;
 				}
-
+				if (!isset($article->catid)) { break; }
+				if (!isset($article->slug)) { $article->slug = '';}
+				if (isset($article->router) && isset($article->catid)) {
+					$link = JRoute::_(call_user_func($article->router,$article->slug,$article->catid));
+					break;
+				}
+				if (isset($article->link)) {
+					$link = $article->link;
+					$link = JRoute::_($link);
+					break;
+				}
 				// Prepare the article link
 				if ( $this->params_content->get('access-view') ) :
 					$link = JRoute::_(ContentHelperRoute::getArticleRoute($article->slug, $article->catid));
@@ -536,8 +631,10 @@ class plgContentAutoReadMoreCore extends JPluginGJFields {
 				endif;
 				break;
 			}
-			foreach ($thumbnails as $k=>$v) {
-				$thumbnails[$k] = '<a href="'.$link.'">'.$v.'</a>';
+			if (isset($link)) {
+				foreach ($thumbnails as $k=>$v) {
+					$thumbnails[$k] = '<a href="'.$link.'">'.$v.'</a>';
+				}
 			}
 		}
 
