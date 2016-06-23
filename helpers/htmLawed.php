@@ -1,5 +1,5 @@
  <?php
-
+defined('_JEXEC') or die('Restricted access');
 /*
 htmLawed 1.1.14, 8 August 2012
 Copyright Santosh Patnaik

@@ -3,6 +3,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 /**
+ *  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
 * This class overcomes a few common annoyances with the DOMDocument class,
 * such as saving partial HTML without automatically adding extra tags
 * and properly recognizing various encodings, specifically UTF-8.

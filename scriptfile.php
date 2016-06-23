@@ -3,6 +3,7 @@
 defined('_JEXEC') or die('Restricted access');
 if (!class_exists('ScriptAry')) { include dirname(__FILE__).'/scriptary.php';}
 
+// * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
 
 
 
@@ -120,7 +121,7 @@ class plgContentAutoreadmoreInstallerScript extends ScriptAry {
 
 			} catch (Exception $e) {
 				// Catch the error.
-				JError::raiseWarning(100, $e->getMessage(), $db->stderr(true));
+				JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
 			}
 		}
 
