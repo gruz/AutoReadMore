@@ -83,7 +83,7 @@ class JFormFieldModalArticle extends JFormFieldGJFields
 		}
 		catch (RuntimeException $e)
 		{
-			JFactory::getApplication()->enqueueMessage($e->getMessage(), 'error');
+			JError::raiseWarning(500, $e->getMessage());
 		}
 
 		if (empty($title))

@@ -66,6 +66,7 @@ class JPluginGJFields extends JPlugin {
 			$jform = $jinput->post->get('jform',null,'array');
 			if(isset($jform['element']) && $jform['element'] == $this->plg_name && isset($jform['folder']) && $jform['folder'] == $this->plg_type) {
 				if ($jform['enabled'] == '0') {
+					//unset ($_SESSION[$this->plg_full_name]);
 					$session->clear($this->plg_full_name);
 				}
 				else {
