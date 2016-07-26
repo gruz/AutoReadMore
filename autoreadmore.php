@@ -568,6 +568,7 @@ else
 			$hard_coded_exclude_global_contexts = array(
 				'com_virtuemart', // Never fire for VirtueMart
 			);
+
 			$contextsToExclude = array(
 				'com_tz_portfolio.p_article', // Never run for full article
 				'com_content.article', // Never run for full article
@@ -619,7 +620,22 @@ else
 			}
 			elseif ($this->paramGet('joomla_articles') == 1 and $context == 'com_content.category')
 			{
-				return true;
+				// If it's an article, as a category desc doesn't contain anything in it's object except ->text
+				if (isset($article->id))
+				{
+					return true;
+				}
+				else
+				{
+					if ($this->paramGet('joomla_articles_parse_category'))
+					{
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				}
 			}
 
 			$context_switch = $this->paramGet('context_switch');

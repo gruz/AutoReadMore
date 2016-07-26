@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="plugin" group="content" method="upgrade">
 	<name>PLG_CONTENT_AUTOREADMORE_TITLE</name>
-	<creationDate>2016-07-13</creationDate>
+	<creationDate>2016-07-26</creationDate>
 	<copyright>Copyright (C) 2004-2016 Gruz All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<author>Gruz</author>
 	<authorEmail>arygroup@gmail.com</authorEmail>
 	<authorUrl>http://gruz.org.ua/about-joomla/29-joomla-extensions/11.html</authorUrl>
-	<version>4.5.3</version>
+	<version>4.5.5</version>
 	<description>PLG_CONTENT_AUTOREADMORE_THANK_YOU_FOR_USING_AUTO_READ_MORE</description>
 	<files>
-		
-		
-		
-		
-		
-		
-		
-		
+
+
+
+
+
+
+
+
 	<folder>extensions</folder><folder>helpers</folder><folder>images</folder><folder>language</folder><filename>README.md</filename><filename plugin="autoreadmore">autoreadmore.php</filename><filename>index.html</filename><filename>scriptary.php</filename><filename>scriptfile.php</filename></files>
 	<config>
 		<fields name="params" addfieldpath="/libraries/gjfields">
@@ -67,6 +67,10 @@
 				</field>
 
 				<field name="{joomla_articles" type="toggler" param="joomla_articles" value="1"/>
+					<field name="joomla_articles_parse_category" type="list" default="0" label="PLG_CONTENT_AUTOREADMORE_FIELD_PARSE_CATEGORY" description="PLG_CONTENT_AUTOREADMORE_FIELD_PARSE_CATEGORY_DESC">
+						<option value="0">JNo</option>
+						<option value="1">JYes</option>
+					</field>
 					<field name="{joomla_artciles_options" maxrepeatlength="1" type="variablefield" basetype="blockquote" class="no-box-shadow" label=""/>
 						<!--	Select categories { -->
 						<field name="categories_switch" type="list" default="0" label="PLG_CONTENT_AUTOREADMORE_FIELD_CATEGORIES" description="">
@@ -200,6 +204,6 @@
 		</fields>
 	</config>
 
-	
-	
+
+
 <scriptfile>scriptfile.php</scriptfile><updateservers><servers type="extension" priority="1" name="autoreadmore">http://gruz.org.ua/index.php?option=com_ars&amp;view=update&amp;task=stream&amp;format=xml&amp;id=2&amp;dummy=extension.xml</servers></updateservers></extension>
