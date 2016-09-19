@@ -112,7 +112,6 @@ else
 			{
 				return false;
 			}
-
 			$jinput = JFactory::getApplication()->input;
 
 			if ($jinput->get('option', null, 'CMD') == 'com_dump')
@@ -273,6 +272,11 @@ else
 
 			$limittype = $this->paramGet('limittype');
 
+			if (isset($article->readmore))
+			{
+				$original_readmore = $article->readmore;
+			}
+
 			// Limit by chars
 			if ($limittype == 0)
 			{
@@ -341,6 +345,11 @@ else
 
 				$text = AutoReadMoreString::truncateByWords($text, $maxLimit, $article->readmore);
 
+				if (strlen($text) !== $original_length)
+				{
+					$article->readmore = true;
+				}
+
 				$text = $this->addTrimmingDots($text);
 				$text = AutoReadMoreString::cleanUpHTML($text);
 			}
@@ -396,6 +405,11 @@ else
 
 			$article->introtext = $text . $debug_addon;
 			$article->text = $text . $debug_addon;
+
+			if (!$this->paramGet('Ignore_Existing_Read_More') && isset($original_readmore))
+			{
+				$article->readmore = $original_readmore;
+			}
 		}
 
 		/**

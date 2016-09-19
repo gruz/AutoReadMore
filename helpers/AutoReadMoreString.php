@@ -113,7 +113,7 @@ class AutoReadMoreString {
 	 * @param	bool	$show_readmore	pointer to the $article->readmore flag. Is set to true, if the text was truncated. A short text may be not truncated.
 	 * @return	string			Trucated text with probably broken HTML
 	 */
-	static function truncateByWords($text,$maxLimit, &$show_readmore = false) {
+	static function truncateByWords($text, $maxLimit, &$show_readmore = false) {
 
 		/* Some testing text
 		$maxLimit = 10;
@@ -132,17 +132,25 @@ class AutoReadMoreString {
 		$text_prepare_temp = array();
 
 		$show_readmore = false;
-		$exploded_by_spaces = explode (' ',$text);
+		$exploded_by_spaces = explode (' ', $text);
 		$counter = 0;
 
 		$openTags = 0;
 		$closedTags = 0;
-		foreach ($exploded_by_spaces as $exploded_by_spaces_element) {
-			$exploded_by_linebreaks = explode (PHP_EOL,$exploded_by_spaces_element);
-			foreach ($exploded_by_linebreaks as $exploded_by_linebreaks_element) {
-				if ($counter>=$maxLimit) { $show_readmore = true; break;}
-				$counter++;
 
+		foreach ($exploded_by_spaces as $exploded_by_spaces_element)
+		{
+			$exploded_by_linebreaks = explode(PHP_EOL, $exploded_by_spaces_element);
+
+			foreach ($exploded_by_linebreaks as $exploded_by_linebreaks_element)
+			{
+				if ($counter >= $maxLimit)
+				{
+					$show_readmore = true;
+					break;
+				}
+
+				$counter++;
 
 				//if (trim($exploded_by_linebreaks_element) == '-') {
 				$subject = $exploded_by_linebreaks_element;
@@ -151,42 +159,58 @@ class AutoReadMoreString {
 				preg_match_all('/>/', $subject, $matches, PREG_OFFSET_CAPTURE);
 				$closedTags = count($matches[0]);
 				$tagOpen = false;
-				if ($openTags == 0) {
+
+				if ($openTags == 0)
+				{
 					//$tagOpen = false;
 				}
-				else if ($openTags == $closedTags || ($openTags - $closedTags) > 0) {
+				elseif ($openTags == $closedTags || ($openTags - $closedTags) > 0)
+				{
 					$tagOpen = true;
 				}
+
 				$openTags = $openTags - $closedTags;
 				$strlen = null;
 				$stripped = trim(strip_tags($exploded_by_linebreaks_element));
-				if ($tagOpen && $closedTags > 0 && $stripped != '') {
-					if (!JString::strpos($stripped,'<') && !JString::strpos($stripped,'>')) {
+
+				if ($tagOpen && $closedTags > 0 && $stripped != '')
+				{
+					if (!JString::strpos($stripped,'<') && !JString::strpos($stripped,'>'))
+					{
 						$tagOpen = false;
 					}
-					else {
+					else
+					{
 						$trim = trim(strip_tags($exploded_by_linebreaks_element));
 						$strlen = JString::strlen($trim)-1;
-						if ($strlen == JString::strpos($trim,'>')) {
 
-						} else {
+						if ($strlen == JString::strpos($trim,'>'))
+						{
+
+						}
+						else
+						{
 							$tagOpen = false;
 						}
 					}
 				}
+
 				if (
 					empty ($exploded_by_linebreaks_element) ||
 					(trim($exploded_by_linebreaks_element) == '-')
 					|| $tagOpen
-				) {
+				)
+				{
 					$counter--;
 				}
+
 				$text_prepare_temp[] = $exploded_by_linebreaks_element;
 			}
 
 		}
 
-		if ($show_readmore) {
+		if ($show_readmore)
+		{
 			$text = implode(' ',$text_prepare_temp);
 		}
 
