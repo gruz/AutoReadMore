@@ -406,9 +406,12 @@ else
 			$article->introtext = $text . $debug_addon;
 			$article->text = $text . $debug_addon;
 
-			if (!$this->paramGet('Ignore_Existing_Read_More') && isset($original_readmore))
+			if (!$article->readmore)
 			{
-				$article->readmore = $original_readmore;
+				if (!$this->paramGet('Ignore_Existing_Read_More') && isset($original_readmore))
+				{
+					$article->readmore = $original_readmore;
+				}
 			}
 		}
 

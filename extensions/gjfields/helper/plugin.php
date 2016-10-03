@@ -529,7 +529,7 @@ class JPluginGJFields extends JPlugin
 		if (!empty($uribase))
 		{
 			$file_path = JPath::clean(str_replace(JPATH_ROOT . '/' . JUri::base(true), JPATH_ROOT . '/', $file_path));
-			$url = JPath::clean(JUri::base(true) . '/' . $url);
+			$url = JPath::clean(JUri::root(true) . '/' . $url);
 		}
 
 		// If the file is a local one, then add it's md5_file hash to the link
