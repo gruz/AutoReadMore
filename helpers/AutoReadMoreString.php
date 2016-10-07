@@ -24,47 +24,77 @@ defined('_JEXEC') or die('Restricted access');
  * @author Jonas Raoni Soares Silva
  * @link http://snippets.dzone.com/posts/show/7125
  */
-class AutoReadMoreString {
-	public static function truncate($text, $length, $suffix = '&hellip;', $isHTML = true){
+class AutoReadMoreString
+{
+	public static function truncate($text, $length, $suffix = '&hellip;', $isHTML = true, $noSpaceLanguage = false)
+	{
 		$i = 0;
 		$simpleTags=array('br'=>true,'hr'=>true,'input'=>true,'image'=>true,'link'=>true,'meta'=>true);
 		$tags = array();
-		if($isHTML){
-			preg_match_all('/<[^>]+>([^<]*)/ui', $text, $m, PREG_OFFSET_CAPTURE | PREG_SET_ORDER);
-			foreach($m as $o){
-				if($o[0][1] - $i >= $length)
+
+		if($isHTML)
+		{
+			preg_match_all('/<[^>]+>([^<]*)/ui', $text, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER);
+
+			foreach($matches as $match)
+			{
+				if($match[0][1] - $i >= $length)
+				{
 					break;
-				$t = JString::substr(strtok($o[0][0], " \t\n\r\0\x0B>"), 1);
-				// test if the tag is unpaired, then we mustn't save them
+				}
+
+				$t = JString::substr(strtok($match[0][0], " \t\n\r\0\x0B>"), 1);
+
+				// Test if the tag is unpaired, then we mustn't save them
 				if($t[0] != '/' && (!isset($simpleTags[$t])))
+				{
 					$tags[] = $t;
+				}
 				elseif(end($tags) == JString::substr($t, 1))
+				{
 					array_pop($tags);
-				$i += $o[1][1] - $o[0][1];
+				}
+				$i += $match[1][1] - $match[0][1];
 			}
 		}
 
-		// output without closing tags
+		// Output without closing tags
 		$output = JString::substr($text, 0, $length = min(JString::strlen($text),  $length + $i));
+
 		// closing tags
 		$output2 = (count($tags = array_reverse($tags)) ? '</' . implode('></', $tags) . '>' : '');
 
 		// Find last space or HTML tag (solving problem with last space in HTML tag eg. <span class="new">)
 		$temp = preg_split('/<.*>| /ui', $output, -1, PREG_SPLIT_OFFSET_CAPTURE);
+
 		$temp = end ($temp);
 		$temp = end ($temp);
+
 		$pos = (int)  $temp;
+
 		// Append closing tags to output
 		$output.=$output2;
 
+		if ($noSpaceLanguage)
+		{
+			return $output;
+		}
+
 		// Get everything until last space
 		$one = JString::substr($output, 0, $pos);
+
 		// Get the rest
 		$two = JString::substr($output, $pos, (JString::strlen($output) - $pos));
+
 		// Extract all tags from the last bit
 		preg_match_all('/<(.*?)>/sui', $two, $tags);
+
 		// Add suffix if needed
-		if (JString::strlen($text) > $length) { $one .= $suffix; }
+		if (JString::strlen($text) > $length)
+		{
+			$one .= $suffix;
+		}
+
 		// Re-attach tags
 		$output = $one . implode($tags[0]);
 

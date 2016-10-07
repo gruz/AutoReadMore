@@ -226,7 +226,14 @@ else
 				$this->fulltext_loaded = true;
 			}
 
-			$thumbnails = $this->getThumbNails($text, $article, $context);
+			$ImageAsHTML = true;
+
+			if (in_array($context, array("com_content.featured", "com_content.category")))
+			{
+				$ImageAsHTML = $this->paramGet('ImageAsHTML');
+			}
+
+			$thumbnails = $this->getThumbNails($text, $article, $context, $ImageAsHTML);
 
 			// How many characters are we allowed?
 			$app = JFactory::getApplication();
@@ -277,6 +284,8 @@ else
 				$original_readmore = $article->readmore;
 			}
 
+			$noSpaceLanguage = $this->paramGet('noSpaceLanguage');
+
 			// Limit by chars
 			if ($limittype == 0)
 			{
@@ -318,10 +327,13 @@ else
 							require_once dirname(__FILE__) . '/helpers/AutoReadMoreString.php';
 						}
 
-						$text = AutoReadMoreString::truncate($text, $maxLimit, '&hellip;', true);
+						$text = AutoReadMoreString::truncate($text, $maxLimit, '&hellip;', true, $noSpaceLanguage);
 
-						// Pop off the last word in case it got cut in the middle
-						$text = preg_replace("/[.,!?:;]? [^ ]*$/", "", $text);
+						if (!$noSpaceLanguage)
+						{
+							// Pop off the last word in case it got cut in the middle
+							$text = preg_replace("/[.,!?:;]? [^ ]*$/", "", $text);
+						}
 
 						// Pop off the last tag, if it got cut in the middle.
 						$text = preg_replace('/<[^>]*$/', '', $text);
@@ -757,13 +769,14 @@ else
 		/**
 		 * Returns text with handled images - added classes, stripped attributes, if needed
 		 *
-		 * @param   string  &$text     HTML code of the article
-		 * @param   object  &$article  Article object for additional information like $article->id
-		 * @param   text    $context   Context
+		 * @param   string  &$text        HTML code of the article
+		 * @param   object  &$article     Article object for additional information like $article->id
+		 * @param   text    $context      Context
+		 * @param   bool    $ImageAsHTML  If to return html code or to update the $article object
 		 *
-		 * @return   array  Array of 2 string og HTML code
+		 * @return   text  HTML code to include containing images
 		 */
-		public function getThumbNails( & $text, & $article, $context)
+		public function getThumbNails( & $text, & $article, $context, $ImageAsHTML = true)
 		{
 			// Are we working with any thumbnails?
 			if ($this->paramGet('Thumbnails') < 1)
@@ -780,7 +793,21 @@ else
 			// then load fulltext and search in it also
 			$matches_tmp = array ();
 
-			if ($imagesfound < $this->paramGet('Thumbnails') && !$this->fulltext_loaded && isset($article->id))
+			$totalThumbNails = $this->paramGet('Thumbnails');
+
+			$json = json_decode($article->images);
+
+			if (!empty($json->image_intro))
+			{
+				$totalThumbNails = $totalThumbNails - 1;
+			}
+
+			if ($totalThumbNails < 0)
+			{
+				$totalThumbNails = 0;
+			}
+
+			if ($imagesfound < $totalThumbNails && !$this->fulltext_loaded && isset($article->id))
 			{
 				$fulltext = '';
 
@@ -800,7 +827,7 @@ else
 			$matches = array_merge($matches_tmp, $matches[0]);
 
 			// Loop through the thumbnails.
-			for ($thumbnail = 0; $thumbnail < $this->paramGet('Thumbnails'); $thumbnail++)
+			for ($thumbnail = 0; $thumbnail < $totalThumbNails; $thumbnail++)
 			{
 				if (!isset($matches[$thumbnail]))
 				{
@@ -833,20 +860,49 @@ else
 
 				if (trim($matches[$thumbnail]) != '')
 				{
-					$thumbnails[] = $matches[$thumbnail];
+					if ($ImageAsHTML)
+					{
+						$thumbnails[] = $matches[$thumbnail];
+					}
+					elseif ($thumbnail === 0 )
+					{
+						// Just flag for later see if there was at least one image
+						$thumbnails[] = '';
+
+						foreach (array('image_intro' => 'src', 'image_intro_alt' => 'alt',  'image_intro_caption' => 'title') as $k => $v)
+						{
+							$match = null;
+							preg_match('@' . $v . '="([^"]+)"@', $matches[$thumbnail], $match);
+
+							// ${$v} = array_pop($match);
+							$json->{$k} = array_pop($match);
+						}
+					}
 				}
 			}
 
 			if (empty($thumbnails) && trim($this->paramGet('default_image')) != '' )
 			{
-				$thumbnails[] = '<img src="' . $this->paramGet('default_image') . '">';
+				if ($ImageAsHTML)
+				{
+					$thumbnails[] = '<img src="' . $this->paramGet('default_image') . '">';
+				}
+				elseif (empty($json->image_intro))
+				{
+					$json->image_intro = $this->paramGet('default_image');
+				}
+			}
+
+			if (!$ImageAsHTML)
+			{
+				$article->images = json_encode($json);
 			}
 
 			// Make this thumbnail a link.
 			// $matches[$thumbnail] = "<a href='" . $link . "'>{$matches[$thumbnail]}</a>";
 
 			// Add to the list of thumbnails.
-			if ($this->paramGet('image_link_to_article'))
+			if ($this->paramGet('image_link_to_article') && $ImageAsHTML)
 			{
 				$jinput = JFactory::getApplication()->input;
 

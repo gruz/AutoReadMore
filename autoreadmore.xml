@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="plugin" group="content" method="upgrade">
 	<name>PLG_CONTENT_AUTOREADMORE_TITLE</name>
-	<creationDate>2016-10-03</creationDate>
+	<creationDate>2016-10-07</creationDate>
 	<copyright>Copyright (C) 2004-2016 Gruz All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<author>Gruz</author>
 	<authorEmail>arygroup@gmail.com</authorEmail>
 	<authorUrl>http://gruz.org.ua/about-joomla/29-joomla-extensions/11.html</authorUrl>
-	<version>4.5.7</version>
+	<version>4.5.8</version>
 	<description>PLG_CONTENT_AUTOREADMORE_THANK_YOU_FOR_USING_AUTO_READ_MORE</description>
 	<files>
 
@@ -151,6 +151,10 @@
 					<option value="1">PLG_CONTENT_AUTOREADMORE_LIMITTYPE_OPTION_WORDS</option>
 					<option value="2">PLG_CONTENT_AUTOREADMORE_LIMITTYPE_OPTION_PARAGRAPHS</option>
 				</field>
+				<field name="noSpaceLanguage" type="list" default="0" label="PLG_CONTENT_AUTOREADMORE_NOSPACELANGUAGE" description="PLG_CONTENT_AUTOREADMORE_NOSPACELANGUAGE_DESC">
+					<option value="1">JYes</option>
+					<option value="0">JNo</option>
+				</field>
 				<field name="leadingMax" type="text" default="750" label="PLG_CONTENT_AUTOREADMORE_LEADING_MAX_LABEL" description="PLG_CONTENT_AUTOREADMORE_MAX_DESC"/>
 				<field name="introMax" type="text" default="500" label="PLG_CONTENT_AUTOREADMORE_INTRO_MAX_LABEL" description="PLG_CONTENT_AUTOREADMORE_MAX_DESC"/>
 				<field name="Ignore_Existing_Read_More" type="list" default="0" label="PLG_CONTENT_AUTOREADMORE_IGNORE_EXISTING_LABEL">
@@ -186,20 +190,31 @@
 			<fieldset name="thumbnails" group="thumbnails" label="PLG_CONTENT_AUTOREADMORE_THUMBNAIL_SETTINGS_LABEL">
 				<field name="Thumbnails" type="text" default="0" label="PLG_CONTENT_AUTOREADMORE_THUMBNAILS_LABEL" description="PLG_CONTENT_AUTOREADMORE_THUMBNAILS_DESC"/>
 				<field name="default_image" type="text" default="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/200px-No_image_available.svg.png" label="PLG_CONTENT_AUTOREADMORE_DEFAULT_IMAGE" description="PLG_CONTENT_AUTOREADMORE_DEFAULT_IMAGE_DESC"/>
-				<field name="Thumbnails_Class" type="text" default="" label="PLG_CONTENT_AUTOREADMORE_THUMBNAILS_CLASS_LABEL" description="PLG_CONTENT_AUTOREADMORE_THUMBNAILS_CLASS_DESC"/>
-				<field name="image_link_to_article" type="list" default="0" label="PLG_CONTENT_AUTOREADMORE_IMAGE_LINK_TO_ARTICLE" description="">
+
+				<field name="ImageAsHTML" type="list" default="1" label="PLG_CONTENT_AUTOREADMORE_IMAGE_AS_HTML" description="PLG_CONTENT_AUTOREADMORE_IMAGE_AS_HTML_DESC">
 					<option value="1">JYes</option>
 					<option value="0">JNo</option>
 				</field>
-				<field name="Strip_Image_Formatting" type="list" default="0" label="PLG_CONTENT_AUTOREADMORE_STRIP_FORMATTING_LABEL" description="PLG_CONTENT_AUTOREADMORE_STRIP_IMAGE_FORMATTING_DESC">
-					<option value="1">JYes</option>
-					<option value="0">JNo</option>
-				</field>
+
+				<field name="{Enabled_Front_Page" type="toggler" param="ImageAsHTML" value="1"/>
+
+					<field name="Thumbnails_Class" type="text" default="" label="PLG_CONTENT_AUTOREADMORE_THUMBNAILS_CLASS_LABEL" description="PLG_CONTENT_AUTOREADMORE_THUMBNAILS_CLASS_DESC"/>
+					<field name="image_link_to_article" type="list" default="0" label="PLG_CONTENT_AUTOREADMORE_IMAGE_LINK_TO_ARTICLE" description="">
+						<option value="1">JYes</option>
+						<option value="0">JNo</option>
+					</field>
+					<field name="Strip_Image_Formatting" type="list" default="0" label="PLG_CONTENT_AUTOREADMORE_STRIP_FORMATTING_LABEL" description="PLG_CONTENT_AUTOREADMORE_STRIP_IMAGE_FORMATTING_DESC">
+						<option value="1">JYes</option>
+						<option value="0">JNo</option>
+					</field>
+					<field name="csscode" default=".margin-h-8 {margin:8px;}" type="textarea" label="PLG_CONTENT_AUTOREADMORE_CSS_CODE_LABEL" description="PLG_CONTENT_AUTOREADMORE_CSS_CODE_DESC"/>
+
+				<field name="Enabled_Front_Page}" type="toggler"/>
+
 				<field name="Force_Image_Handle" type="list" default="0" label="PLG_CONTENT_AUTOREADMORE_FORCE_IMAGE_HANDLE_LABEL" description="PLG_CONTENT_AUTOREADMORE_FORCE_IMAGE_HANDLE_DESC">
 					<option value="1">JYes</option>
 					<option value="0">JNo</option>
 				</field>
-				<field name="csscode" default=".margin-h-8 {margin:8px;}" type="textarea" label="PLG_CONTENT_AUTOREADMORE_CSS_CODE_LABEL" description="PLG_CONTENT_AUTOREADMORE_CSS_CODE_DESC"/>
 			</fieldset>
 		</fields>
 	</config>
