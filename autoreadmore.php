@@ -112,6 +112,7 @@ else
 			{
 				return false;
 			}
+
 			$jinput = JFactory::getApplication()->input;
 
 			if ($jinput->get('option', null, 'CMD') == 'com_dump')
@@ -355,9 +356,11 @@ else
 					require_once dirname(__FILE__) . '/helpers/AutoReadMoreString.php';
 				}
 
+				$original_length = JString::strlen($text);
 				$text = AutoReadMoreString::truncateByWords($text, $maxLimit, $article->readmore);
+				$newLength = JString::strlen($text);
 
-				if (strlen($text) !== $original_length)
+				if ($newLength !== $original_length)
 				{
 					$article->readmore = true;
 				}
@@ -799,7 +802,7 @@ else
 
 			if (!empty($json->image_intro))
 			{
-				$totalThumbNails = $totalThumbNails - 1;
+				$totalThumbNails--;
 			}
 
 			if ($totalThumbNails < 0)

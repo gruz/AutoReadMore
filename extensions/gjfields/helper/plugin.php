@@ -564,11 +564,11 @@ class JPluginGJFields extends JPlugin
 		if ($includeMinified)
 		{
 			$url = $url_minified;
-			$file_path = md5_file($file_path);
+			// $file_path = md5_file($file_path);
 		}
 		else
 		{
-			$file_path = md5_file($file_path);
+			// $file_path = md5_file($file_path);
 		}
 
 		$doc = JFactory::getDocument();
