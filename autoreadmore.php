@@ -886,9 +886,21 @@ else
 
 			if (empty($thumbnails) && trim($this->paramGet('default_image')) != '' )
 			{
+				$Thumbnails_Class = $this->paramGet('Thumbnails_Class');
+				$Thumbnails_Class_Check = trim($Thumbnails_Class);
+
+				if (!empty($Thumbnails_Class_Check))
+				{
+					$Thumbnails_Class = ' class="' . $Thumbnails_Class . '"';
+				}
+				else
+				{
+					$Thumbnails_Class = '';
+				}
+
 				if ($ImageAsHTML)
 				{
-					$thumbnails[] = '<img src="' . $this->paramGet('default_image') . '">';
+					$thumbnails[] = '<img ' . $Thumbnails_Class . ' src="' . $this->paramGet('default_image') . '">';
 				}
 				elseif (empty($json->image_intro))
 				{
