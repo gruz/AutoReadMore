@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension version="2.5" type="file" method="upgrade">
   <name>da_DK_autoreadmore_language_pack</name>
-  <version>2016-11-28 13:11</version>
-  <creationDate>2016-11-28 13:11</creationDate>
+  <version>2017-02-13 07:53</version>
+  <creationDate>2017-02-13 07:53</creationDate>
   <author>AryGroup</author>
   <email>arygroup@gmail.com</email>
   <authorUrl>http://arygroup.ga</authorUrl>
-  <copyright>Copyright (C) 2004-2016 Gruz. All rights reserved.</copyright>
+  <copyright>Copyright (C) 2004-2017 Gruz. All rights reserved.</copyright>
   <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
   <description>da-DK AutoReadMore language pack</description>
   <scriptfile>scriptfile.php</scriptfile>

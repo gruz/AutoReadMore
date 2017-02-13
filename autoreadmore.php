@@ -624,16 +624,19 @@ else
 			$view = $jinput->get('view', null, 'CMD');
 			$article_id = $jinput->get('id', null, 'INT');
 
-			if ( ($view == "article" && $article->id == $article_id)
-				|| ($context == 'com_k2.item' && $article->id == $article_id))
+			if (isset($article->id))
 			{
-				// If it's already a full article - go away'
-				if (!isset($GLOBALS['joomlaAutoReadMorePluginArticleShown']) )
+				if ( ($view == "article" && $article->id == $article_id)
+					|| ($context == 'com_k2.item' && $article->id == $article_id))
 				{
-					// But leave a flag not to go aways in a module
-					$GLOBALS['joomlaAutoReadMorePluginArticleShown'] = $article_id;
+					// If it's already a full article - go away'
+					if (!isset($GLOBALS['joomlaAutoReadMorePluginArticleShown']) )
+					{
+						// But leave a flag not to go aways in a module
+						$GLOBALS['joomlaAutoReadMorePluginArticleShown'] = $article_id;
 
-					return false;
+						return false;
+					}
 				}
 			}
 
