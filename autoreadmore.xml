@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="plugin" group="content" method="upgrade">
 	<name>PLG_CONTENT_AUTOREADMORE_TITLE</name>
-	<creationDate>2017-02-13</creationDate>
+	<creationDate>2017-02-25</creationDate>
 	<copyright>Copyright (C) 2004-2017 Gruz All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<author>Gruz</author>
 	<authorEmail>arygroup@gmail.com</authorEmail>
 	<authorUrl>http://gruz.org.ua/extensions/autoreadmore.html</authorUrl>
-	<version>4.5.12</version>
+	<version>4.5.13</version>
 	<description>PLG_CONTENT_AUTOREADMORE_THANK_YOU_FOR_USING_AUTO_READ_MORE</description>
 	<files>
 

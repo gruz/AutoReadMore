@@ -9,8 +9,12 @@
 // No direct access
 defined('_JEXEC') or die;
 
-	// For Joomla 1.6
-	jimport('joomla.form.formfield');
+jimport('joomla.form.formfield');
+
+if (!class_exists('GJFieldsFormField'))
+{
+	include 'gjfields.php';
+}
 
 /**
  * Version field

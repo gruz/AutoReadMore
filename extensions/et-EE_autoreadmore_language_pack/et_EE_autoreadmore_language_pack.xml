@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension version="2.5" type="file" method="upgrade">
-  <name>pt_BR_autoreadmore_language_pack</name>
+  <name>et_EE_autoreadmore_language_pack</name>
   <version>2017-02-25 11:29</version>
   <creationDate>2017-02-25 11:29</creationDate>
   <author>AryGroup</author>
@@ -8,15 +8,15 @@
   <authorUrl>http://arygroup.ga</authorUrl>
   <copyright>Copyright (C) 2004-2017 Gruz. All rights reserved.</copyright>
   <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
-  <description>pt-BR AutoReadMore language pack</description>
+  <description>et-EE AutoReadMore language pack</description>
   <scriptfile>scriptfile.php</scriptfile>
   <fileset>
-    <files target="plugins/content/autoreadmore/language/pt-BR" folder="plugins/content/autoreadmore/language/pt-BR">
-      <file>pt-BR.plg_content_autoreadmore.ini</file>
-      <file>pt-BR.plg_content_autoreadmore.sys.ini</file>
+    <files target="plugins/content/autoreadmore/language/et-EE" folder="plugins/content/autoreadmore/language/et-EE">
+      <file>et-EE.plg_content_autoreadmore.ini</file>
+      <file>et-EE.plg_content_autoreadmore.sys.ini</file>
     </files>
   </fileset>
   <updateservers>
-    <server type="extension" priority="1" name="pt_BR_autoreadmore_language_pack">http://gruz.org.ua/images/stories/files/autoreadmore/update_pt-BR.xml</server>
+    <server type="extension" priority="1" name="et_EE_autoreadmore_language_pack">http://gruz.org.ua/images/stories/files/autoreadmore/update_et-EE.xml</server>
   </updateservers>
 </extension>
