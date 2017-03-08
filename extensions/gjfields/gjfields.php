@@ -9,6 +9,11 @@
 // No direct access
 defined('_JEXEC') or die();
 
+if (!class_exists('JPluginGJFields'))
+{
+	include 'helper/plugin.php';
+}
+
 /**
  * Base class to extend with gjfields fileds
  *
@@ -118,6 +123,16 @@ class GJFieldsFormField extends JFormField
 		$gjfields_version = $gjfields_version[1];
 
 		return $gjfields_version;
+	}
+
+	/**
+	 * A cap for older joomla versions. Is a must.
+	 *
+	 * @return   string
+	 */
+	public function getInput()
+	{
+		return parent::getInput();
 	}
 }
 
