@@ -287,6 +287,36 @@ else
 
 			$noSpaceLanguage = $this->paramGet('noSpaceLanguage');
 
+			$thereIsPluginCode = false;
+
+			if (strpos($article->text, '{autoreadmore}') !== false)
+			{
+				$thereIsPluginCode = true;
+			}
+
+			switch ($this->paramGet('PluginCode')) {
+				case 'only':
+					if (!$thereIsPluginCode)
+					{
+					// Set a fake limit type if no truncate is needed
+						$limittype = -1;
+					}
+					break;
+				case 'except':
+					if ($thereIsPluginCode)
+					{
+					// Set a fake limit type if no truncate is needed
+						$limittype = -1;
+					}
+					break;
+				case 'ignore':
+				default :
+					break;
+			}
+
+			// Remove plugin code
+			$text = str_replace(array('{autoreadmore}', '<p>{autoreadmore}</p>', '<span>{autoreadmore}</span>'), '', $text);
+
 			// Limit by chars
 			if ($limittype == 0)
 			{

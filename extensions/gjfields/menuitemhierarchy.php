@@ -25,7 +25,7 @@ require_once realpath(JPATH_ADMINISTRATOR . '/components/com_menus/helpers/menus
  * @subpackage  Form
  * @since       1.6
  */
-class GJFieldsFormFieldMenuitemhierarchy extends JFormFieldMenuitemhierarchy
+class GJFieldsFormFieldMenuitemhierarchy extends JFormFieldGroupedList
 {
 	/**
 	 * The form field type.

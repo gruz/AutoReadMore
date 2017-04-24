@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="plugin" group="content" method="upgrade">
 	<name>PLG_CONTENT_AUTOREADMORE_TITLE</name>
-	<creationDate>2017-03-08</creationDate>
+	<creationDate>2017-04-24</creationDate>
 	<copyright>Copyright (C) 2004-2017 Gruz All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<author>Gruz</author>
 	<authorEmail>arygroup@gmail.com</authorEmail>
 	<authorUrl>http://gruz.org.ua/extensions/autoreadmore.html</authorUrl>
-	<version>4.5.14</version>
+	<version>4.5.15</version>
 	<description>PLG_CONTENT_AUTOREADMORE_THANK_YOU_FOR_USING_AUTO_READ_MORE</description>
 	<files>
 
@@ -161,6 +161,14 @@
 					<option value="1">JYes</option>
 					<option value="0">JNo</option>
 				</field>
+
+				<field name="PluginCode" type="list" default="ignore" label="PLG_CONTENT_AUTOREADMORE_PLUGINCODE" description="PLG_CONTENT_AUTOREADMORE_PLUGINCODE_DESCRIPTION">
+					<option value="ignore">PLG_CONTENT_AUTOREADMORE_PLUGINCODE_IGNORE</option>
+					<option value="only">PLG_CONTENT_AUTOREADMORE_PLUGINCODE_ONLY</option>
+					<option value="except">PLG_CONTENT_AUTOREADMORE_PLUGINCODE_EXCEPT</option>
+				</field>
+
+
 				<field name="Strip_Formatting" type="list" default="0" label="PLG_CONTENT_AUTOREADMORE_STRIP_FORMATTING_LABEL" description="PLG_CONTENT_AUTOREADMORE_STRIP_FORMATTING_DESC">
 					<option value="1">JYes</option>
 					<option value="0">JNo</option>
