@@ -170,6 +170,22 @@ else
 				$article->slug = $article->id . ':' . $article->core_alias;
 			}
 
+			$thereIsPluginCode = false;
+
+			if ($this->paramGet('PluginCode') != 'ignore')
+			{
+				$possibleParams = array('text', 'introtext', 'fulltext');
+
+				foreach ($possibleParams as $paramName)
+				{
+					if (isset($article->{$paramName}) && strpos($article->{$paramName}, '{autoreadmore}') !== false)
+					{
+						$article->{$paramName} = str_replace(array('{autoreadmore}', '<p>{autoreadmore}</p>', '<span>{autoreadmore}</span>'), '', $article->{$paramName});
+						$thereIsPluginCode = true;
+					}
+				}
+			}
+
 			if (!$this->_checkIfAllowedContext($context, $article))
 			{
 				return;
@@ -287,13 +303,6 @@ else
 
 			$noSpaceLanguage = $this->paramGet('noSpaceLanguage');
 
-			$thereIsPluginCode = false;
-
-			if (strpos($article->text, '{autoreadmore}') !== false)
-			{
-				$thereIsPluginCode = true;
-			}
-
 			switch ($this->paramGet('PluginCode')) {
 				case 'only':
 					if (!$thereIsPluginCode)
@@ -313,9 +322,6 @@ else
 				default :
 					break;
 			}
-
-			// Remove plugin code
-			$text = str_replace(array('{autoreadmore}', '<p>{autoreadmore}</p>', '<span>{autoreadmore}</span>'), '', $text);
 
 			// Limit by chars
 			if ($limittype == 0)
