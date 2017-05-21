@@ -180,7 +180,11 @@ else
 				{
 					if (isset($article->{$paramName}) && strpos($article->{$paramName}, '{autoreadmore}') !== false)
 					{
-						$article->{$paramName} = str_replace(array('{autoreadmore}', '<p>{autoreadmore}</p>', '<span>{autoreadmore}</span>'), '', $article->{$paramName});
+						$article->{$paramName} = str_replace(
+							array('{autoreadmore}', '<p>{autoreadmore}</p>', '<span>{autoreadmore}</span>'),
+							'',
+							$article->{$paramName}
+						);
 						$thereIsPluginCode = true;
 					}
 				}
@@ -199,6 +203,10 @@ else
 			if (is_object($params))
 			{
 				$this->params_content = $params;
+			}
+			elseif (is_array($params))
+			{
+				$this->params_content = (object) $params;
 			}
 			else
 			{
@@ -303,7 +311,8 @@ else
 
 			$noSpaceLanguage = $this->paramGet('noSpaceLanguage');
 
-			switch ($this->paramGet('PluginCode')) {
+			switch ($this->paramGet('PluginCode'))
+			{
 				case 'only':
 					if (!$thereIsPluginCode)
 					{
