@@ -443,6 +443,11 @@ else
 			}
 
 			// If we have thumbnails, add it to $text.
+			if ($this->paramGet('Force_Image_Count'))
+			{
+				$text = preg_replace("/<img[^>]+\>/i", '', $text);
+			}
+
 			$text = $thumbnails . $text;
 
 			if ($this->paramGet('wrap_output') == 1)
@@ -1045,6 +1050,17 @@ else
 						$thumbnails[$k] = '<a href="' . $link . '">' . $v . '</a>';
 					}
 				}
+			}
+
+			if ($this->paramGet('Force_Image_Count'))
+			{
+					foreach ($thumbnails as $k => $v)
+					{
+						if ($k > ($totalThumbNails - 1) )
+						{
+							unset($thumbnails[$k]);
+						}
+					}
 			}
 
 			return implode(PHP_EOL, $thumbnails);

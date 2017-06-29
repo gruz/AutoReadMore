@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="plugin" group="content" method="upgrade">
 	<name>PLG_CONTENT_AUTOREADMORE_TITLE</name>
-	<creationDate>2017-05-21</creationDate>
+	<creationDate>2017-06-29</creationDate>
 	<copyright>Copyright (C) 2004-2017 Gruz All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<author>Gruz</author>
 	<authorEmail>arygroup@gmail.com</authorEmail>
-	<authorUrl>http://gruz.org.ua/extensions/autoreadmore.html</authorUrl>
-	<version>4.5.17</version>
+	<authorUrl>http://gruz.ml/extensions/autoreadmore.html</authorUrl>
+	<version>4.5.18</version>
 	<description>PLG_CONTENT_AUTOREADMORE_THANK_YOU_FOR_USING_AUTO_READ_MORE</description>
 	<files>
 
@@ -197,6 +197,11 @@
 			</fieldset>
 			<fieldset name="thumbnails" group="thumbnails" label="PLG_CONTENT_AUTOREADMORE_THUMBNAIL_SETTINGS_LABEL">
 				<field name="Thumbnails" type="text" default="0" label="PLG_CONTENT_AUTOREADMORE_THUMBNAILS_LABEL" description="PLG_CONTENT_AUTOREADMORE_THUMBNAILS_DESC"/>
+				<field name="Force_Image_Count" basetype="list" type="variablefield" default="0" label="PLG_CONTENT_AUTOREADMORE_FORCE_IMAGE_COUNT_LABEL" description="PLG_CONTENT_AUTOREADMORE_FORCE_IMAGE_COUNT_DESC" maxrepeatlength="1">
+					<option value="1">JYes</option>
+					<option value="0">JNo</option>
+				</field>
+
 				<field name="default_image" type="text" default="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/200px-No_image_available.svg.png" label="PLG_CONTENT_AUTOREADMORE_DEFAULT_IMAGE" description="PLG_CONTENT_AUTOREADMORE_DEFAULT_IMAGE_DESC"/>
 
 				<field name="ImageAsHTML" type="list" default="1" label="PLG_CONTENT_AUTOREADMORE_IMAGE_AS_HTML" description="PLG_CONTENT_AUTOREADMORE_IMAGE_AS_HTML_DESC">
@@ -229,4 +234,4 @@
 
 
 
-<scriptfile>scriptfile.php</scriptfile><updateservers><servers type="extension" priority="1" name="autoreadmore">http://gruz.org.ua/index.php?option=com_ars&amp;view=update&amp;task=stream&amp;format=xml&amp;id=2&amp;dummy=extension.xml</servers></updateservers></extension>
+<scriptfile>scriptfile.php</scriptfile><updateservers><servers type="extension" priority="1" name="autoreadmore">http://gruz.ml/index.php?option=com_ars&amp;view=update&amp;task=stream&amp;format=xml&amp;id=2&amp;dummy=extension.xml</servers></updateservers></extension>
