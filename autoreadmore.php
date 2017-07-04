@@ -819,6 +819,8 @@ else
 			$article = JTable::getInstance("content");
 			$article->load($id);
 
+			$article->fulltext_loaded = true;
+
 			return $article->fulltext;
 		}
 
@@ -842,45 +844,92 @@ else
 
 			$thumbnails = array();
 
-			// Extract all images from the article.
-			$imagesfound  = preg_match_all('/<img [^>]*>/iu', $text, $matches);
-
-			// If we found less thumbnail then expected and the fulltext is not loaded,
-			// then load fulltext and search in it also
-			$matches_tmp = array ();
+			switch ($this->paramGet('image_search_pattern')) {
+				case 'custom':
+					$patterns = explode(PHP_EOL, $this->paramGet('image_search_pattern_custom'));
+					$patterns = array_map('trim', $patterns);
+					break;
+				case 'a_wrapped':
+					$patterns = ['~<a[^>]+><img [^>]+></a>~ui'];
+					break;
+				case 'img_only':
+				default :
+					$patterns = ['~<img [^>]*>~iu'];
+					break;
+			}
 
 			$totalThumbNails = $this->paramGet('Thumbnails');
 
-			$json = json_decode($article->images);
+			// ~ $patterns = [
+					// ~ '/<img [^>]*>/iu',
+					// ~ '~<a[^>]+><img [^>]+></a>~ui',
+			// ~ ];
 
-			if (!empty($json->image_intro))
+			$total_matches = [];
+
+			$fulltext = '';
+
+			foreach ($patterns as $pattern)
 			{
-				$totalThumbNails--;
-			}
+				// Extract all images from the article.
+				$imagesfound  = preg_match_all($pattern, $text, $matches);
 
-			if ($totalThumbNails < 0)
-			{
-				$totalThumbNails = 0;
-			}
+				// If we found less thumbnail then expected and the fulltext is not loaded,
+				// then load fulltext and search in it also
+				$matches_tmp = array ();
 
-			if ($imagesfound < $totalThumbNails && !$this->fulltext_loaded && isset($article->id))
-			{
-				$fulltext = '';
+				$json = json_decode($article->images);
 
-				if (isset($article->fulltext))
+				if (!empty($json->image_intro))
 				{
-					$fulltext = $article->fulltext;
-				}
-				elseif(in_array($context, array('com_content.category','com_content.featured')))
-				{
-					$this->loadFullText($article->id);
+					$totalThumbNails--;
 				}
 
-				$matches_tmp = $matches[0];
-				$imagesfound  = preg_match_all('/<img [^>]*>/ui', $fulltext, $matches);
+				if ($totalThumbNails < 0)
+				{
+					$totalThumbNails = 0;
+				}
+
+				if ($imagesfound < $totalThumbNails && empty($fulltext))
+				{
+
+					if (isset($article->fulltext))
+					{
+						$fulltext = $article->fulltext;
+					}
+					elseif(isset($article->id) && !$this->fulltext_loaded && in_array($context, array('com_content.category','com_content.featured')))
+					{
+						$this->loadFullText($article->id);
+					}
+
+					$matches_tmp = $matches[0];
+					$imagesfound  = preg_match_all($pattern, $fulltext, $matches);
+				}
+
+				$matches = array_merge($matches_tmp, $matches[0]);
+
+
+				foreach ($matches as $km => $match)
+				{
+					$placeholder = '// ##mygruz20170704012529###' . $km . '###// ##mygruz20170704012529';
+					$text = str_replace($match, $placeholder, $text);
+					$fulltext = str_replace($match, $placeholder, $fulltext);
+
+					if (!in_array($match, $total_matches))
+					{
+						$total_matches[$placeholder] = $match;
+					}
+				}
 			}
 
-			$matches = array_merge($matches_tmp, $matches[0]);
+			$matches = [];
+
+			foreach ($total_matches as $placeholder => $match)
+			{
+				$text = str_replace($placeholder, $match, $text);
+
+				$matches[] = $match;
+			}
 
 			// Loop through the thumbnails.
 			for ($thumbnail = 0; $thumbnail < $totalThumbNails; $thumbnail++)
@@ -1061,6 +1110,15 @@ else
 							unset($thumbnails[$k]);
 						}
 					}
+			}
+
+			if ($this->paramGet('wrap_image_output') == 1)
+			{
+				$template = $this->paramGet('wrap_image_output_template');
+				foreach ($thumbnails as $kk => $vv)
+				{
+					$thumbnails[$kk] = str_replace('%OUTPUT%', $vv, $template);
+				}
 			}
 
 			return implode(PHP_EOL, $thumbnails);

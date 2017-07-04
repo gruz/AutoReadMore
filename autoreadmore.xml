@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="plugin" group="content" method="upgrade">
 	<name>PLG_CONTENT_AUTOREADMORE_TITLE</name>
-	<creationDate>2017-06-29</creationDate>
+	<creationDate>2017-07-04</creationDate>
 	<copyright>Copyright (C) 2004-2017 Gruz All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<author>Gruz</author>
 	<authorEmail>arygroup@gmail.com</authorEmail>
 	<authorUrl>http://gruz.ml/extensions/autoreadmore.html</authorUrl>
-	<version>4.5.18</version>
+	<version>4.5.19</version>
 	<description>PLG_CONTENT_AUTOREADMORE_THANK_YOU_FOR_USING_AUTO_READ_MORE</description>
 	<files>
 
@@ -228,6 +228,29 @@
 					<option value="1">JYes</option>
 					<option value="0">JNo</option>
 				</field>
+
+
+<field name="{img_output_options" maxrepeatlength="1" type="variablefield" basetype="blockquote" class="margin-bottom-medium" label="PLG_CONTENT_AUTOREADMORE_FIELD_IMG_OUTPUT_OPTIONS"/>
+
+				<field name="wrap_image_output" type="list" default="0" label="PLG_CONTENT_AUTOREADMORE_FIELD_WRAP_IMAGE_OUTPUT">
+					<option value="0">JNo</option>
+					<option value="1">JYes</option>
+				</field>
+				<field name="{wrap_image_output" type="toggler" param="wrap_image_output" value="1"/>
+				<field name="wrap_image_output_template" type="textarea" cols="80" rows="10" filter="raw" label="PLG_CONTENT_AUTOREADMORE_FIELD_WRAP_TEMPLATE" default="&lt;div class=&quot;image&quot;&gt;%OUTPUT%&lt;/div&gt;" class="span8"/>
+				<field name="wrap_image_output}" type="toggler"/>
+
+				<field name="image_search_pattern" type="list" default="img_only" label="PLG_CONTENT_AUTOREADMORE_FIELD_IMAGE_SEARCH_PATTERN" description="PLG_CONTENT_AUTOREADMORE_FIELD_IMAGE_SEARCH_PATTERN_DESC">
+					<option value="img_only">PLG_CONTENT_AUTOREADMORE_IMAGE_SEARCH_PATTERN_IMG_ONLY</option>
+					<option value="a_wrapped">PLG_CONTENT_AUTOREADMORE_IMAGE_SEARCH_PATTERN_A_WRAPPED</option>
+					<option value="custom">PLG_CONTENT_AUTOREADMORE_IMAGE_SEARCH_PATTERN_CUSTOM</option>
+				</field>
+				<field name="{image_search_pattern" type="toggler" param="image_search_pattern" value="custom"/>
+				<field name="image_search_pattern_custom" type="textarea" cols="80" rows="10" filter="raw" label="PLG_CONTENT_AUTOREADMORE_FIELD_REGEX_PATTERN" default="~&lt;a[^&gt;]+&gt;&lt;img [^&gt;]+&gt;&lt;/a&gt;~ui&#13;&#10;~&lt;img [^&gt;]*&gt;~iu"/>
+				<field name="image_search_pattern}" type="toggler"/>
+<field name="img_output_options}" maxrepeatlength="1" type="variablefield" basetype="blockquote"/>
+
+
 			</fieldset>
 		</fields>
 	</config>
