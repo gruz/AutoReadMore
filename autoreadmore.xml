@@ -7,7 +7,7 @@
 	<author>Gruz</author>
 	<authorEmail>arygroup@gmail.com</authorEmail>
 	<authorUrl>http://gruz.ml/extensions/autoreadmore.html</authorUrl>
-	<version>4.5.19</version>
+	<version>4.5.20</version>
 	<description>PLG_CONTENT_AUTOREADMORE_THANK_YOU_FOR_USING_AUTO_READ_MORE</description>
 	<files>
 
@@ -110,7 +110,7 @@
 					<field name="{context_switch_include" type="toggler" param="context_switch" value="include"/>
 
         <field name="contextsToInclude" type="repeatable" icon="list" description="" label="PLG_CONTENT_AUTOREADMORE_FIELD_CONTEXTSTOINCLUDE">
-          <fieldset hidden="false" name="contexts_list" repeat="true">
+          <fieldset hidden="true" name="contexts_list" repeat="true">
             <field name="context" label="PLG_CONTENT_AUTOREADMORE_FIELD_CONTEXT" type="text" hint="com_k2.itemlist"/>
 				<field name="context_categories_switch" type="list" default="0" class="span2" label="PLG_CONTENT_AUTOREADMORE_FIELD_CATEGORIES" description="PLG_CONTENT_AUTOREADMORE_FIELD_SELECT_DESC">
 					<option value="1">PLG_CONTENT_AUTOREADMORE_FIELD_SELECTION</option>
