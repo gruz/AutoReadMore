@@ -118,16 +118,30 @@ class AutoReadMoreString
 			$text = $tidy->repairString($text, array('show-body-only'=>true, 'output-xhtml'=>true, 'wrap' =>false), 'utf8');
 		}
 		elseif (class_exists('DOMDocument')) {
+			$text = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/></head><body>'.$text.'</body>';
+			$doc = new DOMDocument();
+			$doc->loadHTML($text);
+			$text = $doc->saveHTML();
+
+      $text = preg_replace(array("/^\<\!DOCTYPE.*?<html>.*<body>/si",
+                                    "!</body></html>$!si"),
+                              "",
+                              $text);
+			/*
+			 * // ##mygruz20170705141551
+			 * Commented out this way, as it converts HTML to HTML entities
 			if (!class_exists('SmartDOMDocument')) { require_once (dirname(__FILE__).'/SmartDOMDocument.php'); }
 			$doc = new SmartDOMDocument();
 			$doc->loadHTML($text);
 			$text = $doc->saveHTMLExact();
+			*/
 		}
 		else {
 			if (!function_exists('htmLawed')) { require_once (dirname(__FILE__).'/htmLawed.php'); }
 			$text = preg_replace('/<[^>]*$/ui', '', $text);
 			$text = htmLawed($text);
 		}
+
 		return $text;
 	}
 
