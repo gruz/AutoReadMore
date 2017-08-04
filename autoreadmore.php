@@ -703,7 +703,18 @@ else
 			{
 				return false;
 			}
-			elseif ($this->paramGet('joomla_articles') == 1 and $context == 'com_content.category')
+			elseif ($context == 'com_content.categories')
+			{
+				if ($this->paramGet('joomla_articles_parse_category'))
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			elseif ($this->paramGet('joomla_articles') == 1 and in_array($context, ['com_content.category', 'com_content.categories']) )
 			{
 				// If it's an article, as a category desc doesn't contain anything in it's object except ->text
 				if (isset($article->id))

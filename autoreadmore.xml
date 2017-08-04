@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="plugin" group="content" method="upgrade">
 	<name>PLG_CONTENT_AUTOREADMORE_TITLE</name>
-	<creationDate>2017-07-05</creationDate>
+	<creationDate>2017-08-04</creationDate>
 	<copyright>Copyright (C) 2004-2017 Gruz All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<author>Gruz</author>
 	<authorEmail>arygroup@gmail.com</authorEmail>
 	<authorUrl>http://gruz.ml/extensions/autoreadmore.html</authorUrl>
-	<version>4.5.21</version>
+	<version>4.5.22</version>
 	<description>PLG_CONTENT_AUTOREADMORE_THANK_YOU_FOR_USING_AUTO_READ_MORE</description>
 	<files>
 
@@ -197,7 +197,7 @@
 			</fieldset>
 			<fieldset name="thumbnails" group="thumbnails" label="PLG_CONTENT_AUTOREADMORE_THUMBNAIL_SETTINGS_LABEL">
 				<field name="Thumbnails" type="text" default="0" label="PLG_CONTENT_AUTOREADMORE_THUMBNAILS_LABEL" description="PLG_CONTENT_AUTOREADMORE_THUMBNAILS_DESC"/>
-				<field name="Force_Image_Count" basetype="list" type="variablefield" default="0" label="PLG_CONTENT_AUTOREADMORE_FORCE_IMAGE_COUNT_LABEL" description="PLG_CONTENT_AUTOREADMORE_FORCE_IMAGE_COUNT_DESC" maxrepeatlength="1">
+				<field name="Force_Image_Count" type="list" default="0" label="PLG_CONTENT_AUTOREADMORE_FORCE_IMAGE_COUNT_LABEL" description="PLG_CONTENT_AUTOREADMORE_FORCE_IMAGE_COUNT_DESC" maxrepeatlength="1">
 					<option value="1">JYes</option>
 					<option value="0">JNo</option>
 				</field>
