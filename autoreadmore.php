@@ -242,6 +242,13 @@ else
 			if ($this->paramGet('Ignore_Existing_Read_More') && isset($article->introtext) && isset($article->fulltext))
 			{
 				$text = $article->introtext . PHP_EOL . $article->fulltext;
+				if (file_exists(JPATH_PLUGINS . DS ."content/cck")) { //check if Seblod is installed
+				    $text = preg_replace( '/::cck::(\d+)::\/cck::/', '', $text ) ; //remove the ::cck:: tags
+				    $text = preg_replace( '/::introtext::/', '', $text ) ; //remove the ::introtext:: tags, keep content
+				    $text = preg_replace( '/::\/introtext::/', '', $text ) ; //remove the ::introtext:: tags, keep content
+				    $text = preg_replace( '/::fulltext::/', '', $text ) ; //remove the ::fulltext:: tags, keep content
+				    $text = preg_replace( '/::\/fulltext::/', '', $text ) ; //remove the ::fulltext:: tags, keep content
+				} 
 				$this->fulltext_loaded = true;
 			}
 			elseif ($this->paramGet('Ignore_Existing_Read_More') && isset($article->readmore) && $article->readmore > 0 )
