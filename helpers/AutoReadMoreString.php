@@ -120,7 +120,7 @@ class AutoReadMoreString
 		elseif (class_exists('DOMDocument')) {
 			$text = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/></head><body>'.$text.'</body>';
 			$doc = new DOMDocument();
-			$doc->loadHTML($text);
+			@$doc->loadHTML($text);
 			$text = $doc->saveHTML();
 
       $text = preg_replace(array("/^\<\!DOCTYPE.*?<html>.*<body>/si",

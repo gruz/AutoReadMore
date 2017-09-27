@@ -248,7 +248,7 @@ else
 				    $text = preg_replace( '/::\/introtext::/', '', $text ) ; //remove the ::introtext:: tags, keep content
 				    $text = preg_replace( '/::fulltext::/', '', $text ) ; //remove the ::fulltext:: tags, keep content
 				    $text = preg_replace( '/::\/fulltext::/', '', $text ) ; //remove the ::fulltext:: tags, keep content
-				} 
+				}
 				$this->fulltext_loaded = true;
 			}
 			elseif ($this->paramGet('Ignore_Existing_Read_More') && isset($article->readmore) && $article->readmore > 0 )
