@@ -242,7 +242,7 @@ else
 			if ($this->paramGet('Ignore_Existing_Read_More') && isset($article->introtext) && isset($article->fulltext))
 			{
 				$text = $article->introtext . PHP_EOL . $article->fulltext;
-				if (file_exists(JPATH_PLUGINS . DS ."content/cck")) { //check if Seblod is installed
+				if (file_exists(JPATH_PLUGINS . "/content/cck")) { //check if Seblod is installed
 				    $text = preg_replace( '/::cck::(\d+)::\/cck::/', '', $text ) ; //remove the ::cck:: tags
 				    $text = preg_replace( '/::introtext::/', '', $text ) ; //remove the ::introtext:: tags, keep content
 				    $text = preg_replace( '/::\/introtext::/', '', $text ) ; //remove the ::introtext:: tags, keep content
@@ -344,7 +344,10 @@ else
 			{
 				if (JString::strlen(strip_tags($text)) > $maxLimit)
 				{
-					if ($this->paramGet('Strip_Formatting') == 1)
+					// 2018-04-06 15:41:43 Since preserveTags was added for stripping tags, this approach
+					// would not wok. So it's blocked for now with `false &&`. Let it stay for a while
+					
+					if (false && $this->paramGet('Strip_Formatting') == 1 ) 
 					{
 						// First, remove all new lines
 						$text = preg_replace("/\r\n|\r|\n/", "", $text);
@@ -446,7 +449,8 @@ else
 
 			if ($this->paramGet('Strip_Formatting') == 1)
 			{
-				$text = strip_tags($text);
+				$tags = trim($this->paramGet('preserveTags', null));
+				$text = strip_tags($text, $tags);
 			}
 
 			// If we have thumbnails, add it to $text.

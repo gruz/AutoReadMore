@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension version="2.5" type="file" method="upgrade">
   <name>pl_PL_autoreadmore_language_pack</name>
-  <version>2017-09-27 16:02</version>
-  <creationDate>2017-09-27 16:02</creationDate>
+  <version>2018-04-06 12:42</version>
+  <creationDate>2018-04-06 12:42</creationDate>
   <author>AryGroup</author>
   <email>arygroup@gmail.com</email>
   <authorUrl>http://arygroup.ga</authorUrl>
-  <copyright>Copyright (C) 2004-2017 Gruz. All rights reserved.</copyright>
+  <copyright>Copyright (C) 2004-2018 Gruz. All rights reserved.</copyright>
   <license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
   <description>pl-PL AutoReadMore language pack</description>
   <scriptfile>scriptfile.php</scriptfile>

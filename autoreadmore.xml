@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="plugin" group="content" method="upgrade">
 	<name>PLG_CONTENT_AUTOREADMORE_TITLE</name>
-	<creationDate>2017-09-27</creationDate>
-	<copyright>Copyright (C) 2004-2017 Gruz All rights reserved.</copyright>
+	<creationDate>2018-04-06</creationDate>
+	<copyright>Copyright (C) 2004-2018 Gruz All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<author>Gruz</author>
 	<authorEmail>arygroup@gmail.com</authorEmail>
 	<authorUrl>http://gruz.ml/extensions/autoreadmore.html</authorUrl>
-	<version>4.5.24</version>
+	<version>4.5.25 dev build 3</version>
 	<description>PLG_CONTENT_AUTOREADMORE_THANK_YOU_FOR_USING_AUTO_READ_MORE</description>
 	<files>
 
@@ -173,6 +173,12 @@
 					<option value="1">JYes</option>
 					<option value="0">JNo</option>
 				</field>
+
+				<field name="{Strip_Formatting" type="toggler" param="Strip_Formatting" value="1"/>
+				<field name="preserveTags" type="input" cols="80" rows="10" filter="raw" label="PLG_CONTENT_AUTOREADMORE_FIELD_PRESERVE_TAGS" description="PLG_CONTENT_AUTOREADMORE_FIELD_PRESERVE_TAGS_DESC" default="" class="span8"/>
+				<field name="Strip_Formatting}" type="toggler"/>
+
+
 				<field name="wrap_output" type="list" default="0" label="PLG_CONTENT_AUTOREADMORE_FIELD_WRAP_OUTPUT">
 					<option value="0">JNo</option>
 					<option value="1">JYes</option>
