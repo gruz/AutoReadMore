@@ -7,7 +7,7 @@
 	<author>Gruz</author>
 	<authorEmail>arygroup@gmail.com</authorEmail>
 	<authorUrl>http://gruz.ml/extensions/autoreadmore.html</authorUrl>
-	<version>4.5.25 dev build 3</version>
+	<version>4.5.25 dev build 4</version>
 	<description>PLG_CONTENT_AUTOREADMORE_THANK_YOU_FOR_USING_AUTO_READ_MORE</description>
 	<files>
 
@@ -175,7 +175,13 @@
 				</field>
 
 				<field name="{Strip_Formatting" type="toggler" param="Strip_Formatting" value="1"/>
+				<field name="{Strip_Formatting_options" maxrepeatlength="1" type="variablefield" basetype="blockquote" class="no-box-shadow" label=""/>
 				<field name="preserveTags" type="input" cols="80" rows="10" filter="raw" label="PLG_CONTENT_AUTOREADMORE_FIELD_PRESERVE_TAGS" description="PLG_CONTENT_AUTOREADMORE_FIELD_PRESERVE_TAGS_DESC" default="" class="span8"/>
+				<field name="addNBSP" type="list" default="0" label="PLG_CONTENT_AUTOREADMORE_FIELD_ADD_NPSP" description="PLG_CONTENT_AUTOREADMORE_FIELD_ADD_NPSP_DESC">
+					<option value="0">JNo</option>
+					<option value="1">JYes</option>
+				</field>
+				<field name="Strip_Formatting_options}" maxrepeatlength="1" type="variablefield" basetype="blockquote"/>
 				<field name="Strip_Formatting}" type="toggler"/>
 
 

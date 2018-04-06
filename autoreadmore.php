@@ -450,6 +450,11 @@ else
 			if ($this->paramGet('Strip_Formatting') == 1)
 			{
 				$tags = trim($this->paramGet('preserveTags', null));
+				if ($this->paramGet('addNBSP')) {
+					$text = preg_replace("/<\/P> /i", "</p>", $text);
+					$text = preg_replace("/<\/P>\n/i", "</p>", $text);
+					$text = preg_replace("/<\/P>/i", "</p>&nbsp;", $text);
+				}
 				$text = strip_tags($text, $tags);
 			}
 
