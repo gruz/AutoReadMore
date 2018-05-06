@@ -250,18 +250,27 @@ class ScriptAry
 	public function _publishPlugin($plg_name, $plg_type, $plg_full_name = null, $state = 1)
 	{
 		$plugin = JPluginHelper::getPlugin($plg_type, $plg_name);
-		$pluginIsPublished = empty($plugin);
+		$pluginIsInstalled = !empty($plugin);
+		
+		if (!$pluginIsInstalled) 
+		{
+			return;
+		}
+		
+		$pluginIsPublished = JPluginHelper::isEnabled($plg_type, $plg_name);
+
 		$success = true;
 
-		static $first = 'first';
-		
-		file_put_contents('plugin.txt', print_r($plugin, true));
-		file_put_contents($first . '.txt', $pluginIsPublished . '|' . $state);
-		$first = 'second';
+// static $first = 'first';
+
+// file_put_contents('plugin.txt', print_r($plugin, true));
+// file_put_contents($first . '.txt', $pluginIsPublished . '|' . $state);
+// file_put_contents(uniqid() . '.txt', $pluginIsPublished . '|' . $state);
+// $first = 'second';
 
 		if (($pluginIsPublished && 1 === $state) || (!$pluginIsPublished && 1 !== $state))
 		{ 
-			//return;
+			// return;
 		}
 
 
@@ -306,7 +315,7 @@ class ScriptAry
 		}
 		else
 		{
-			$msg .= '<b style="color:red">' . JText::_('error') . '</b>';
+			// $msg .= '<b style="color:red">' . JText::_('error') . '</b>';
 		}
 
 		$this->messages[] = $msg;
